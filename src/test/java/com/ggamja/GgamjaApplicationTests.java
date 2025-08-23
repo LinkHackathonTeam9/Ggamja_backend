@@ -1,4 +1,4 @@
-package com.ggamja.ggamja;
+package com.ggamja;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
