@@ -5,7 +5,8 @@ spring:
     group:
       local: db-local, port-local, common
       prod: db-prod, port-prod, common
-#    active: local
+    active: local
+    include: secret
 ---
 
 # local DB
