@@ -52,8 +52,13 @@ public class MemberController {
     }
 
     @Operation(summary = "내 정보 조회", description = "현재 로그인된 회원 정보 조회")
-    @ApiResponse(responseCode = "200", description = "조회 성공")
-    @GetMapping("/me")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = GetHomeResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패 (로그인 필요)"),
+            @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })    @GetMapping("/me")
     public ResponseEntity<GetMyInfoResponse> getMyInfo(
             @AuthenticationPrincipal Member member
     ) {
@@ -64,10 +69,14 @@ public class MemberController {
         return ResponseEntity.ok(GetMyInfoResponse.of(fresh));
     }
 
-
     @Operation(summary = "로그아웃", description = "현재 로그인된 세션을 종료합니다.")
-    @ApiResponse(responseCode = "200", description = "로그아웃 성공")
-    @PostMapping("/logout")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공",
+                    content = @Content(schema = @Schema(implementation = GetHomeResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패 (로그인 필요)"),
+            @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })    @PostMapping("/logout")
     public void logout() {
         // Swagger 노출용 껍데기
         // 실제 처리는 Spring Security LogoutFilter가 수행
@@ -107,6 +116,22 @@ public class MemberController {
     ) {
         memberService.deleteMyInfo(member.getId());
         return ResponseEntity.ok(DeleteMemberResponse.success());
+    }
+
+    @Operation(summary = "홈 화면 조회", description = "현재 로그인된 회원의 닉네임, 레벨, 캐릭터 이미지 URL을 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = GetHomeResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패 (로그인 필요)"),
+            @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/home")
+    public ResponseEntity<GetHomeResponse> getHome(
+            @AuthenticationPrincipal Member member
+    ) {
+        GetHomeResponse response = memberService.getHome(member.getId());
+        return ResponseEntity.ok(response);
     }
 }
 

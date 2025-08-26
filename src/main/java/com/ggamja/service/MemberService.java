@@ -5,6 +5,7 @@ import com.ggamja.domain.Member;
 import com.ggamja.dto.request.PostMemberLoginRequest;
 import com.ggamja.dto.request.PostMemberRegisterRequest;
 import com.ggamja.dto.request.PutMyInfoRequest;
+import com.ggamja.dto.response.GetHomeResponse;
 import com.ggamja.dto.response.PostMemberLoginResponse;
 import com.ggamja.dto.response.PostMemberRegisterResponse;
 import com.ggamja.dto.response.PutMyInfoResponse;
@@ -171,6 +172,14 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException(MemberExceptionResponseStatus.MEMBER_NOT_FOUND));
 
         memberRepository.delete(member);
+    }
+
+    @Transactional(readOnly = true)
+    public GetHomeResponse getHome(Long memberId) { // 홈화면 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberExceptionResponseStatus.MEMBER_NOT_FOUND));
+
+        return GetHomeResponse.of(member);
     }
 }
 
