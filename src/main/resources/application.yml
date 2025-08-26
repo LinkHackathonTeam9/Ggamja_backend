@@ -3,10 +3,9 @@ spring:
     name: ggamja
   profiles:
     group:
-      local: db-local, port-local, common
+      local: db-local, port-local, common, secret
       prod: db-prod, port-prod, common
-    active: local
-    include: secret
+    active: prod
 ---
 
 # local DB
