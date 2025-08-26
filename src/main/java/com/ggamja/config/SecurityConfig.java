@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -43,8 +44,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-
-// Todo 배포 서버 올릴 때 수정해서 올리기
-// .csrf(csrf -> csrf
-//    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//)
