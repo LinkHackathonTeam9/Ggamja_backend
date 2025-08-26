@@ -4,8 +4,10 @@ import com.ggamja.domain.Level;
 import com.ggamja.domain.Member;
 import com.ggamja.dto.request.PostMemberLoginRequest;
 import com.ggamja.dto.request.PostMemberRegisterRequest;
+import com.ggamja.dto.request.PutMyInfoRequest;
 import com.ggamja.dto.response.PostMemberLoginResponse;
 import com.ggamja.dto.response.PostMemberRegisterResponse;
+import com.ggamja.dto.response.PutMyInfoResponse;
 import com.ggamja.exception.MemberException;
 import com.ggamja.exception.MemberExceptionResponseStatus;
 import com.ggamja.exception.UnauthorizedException;
@@ -138,6 +140,37 @@ public class MemberService {
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 SecurityContextHolder.getContext()
         );
+    }
+
+    @Transactional
+    public PutMyInfoResponse updateMyInfo(Long memberId, PutMyInfoRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberExceptionResponseStatus.MEMBER_NOT_FOUND));
+
+        // 닉네임 변경
+        if (request.nickname() != null && !request.nickname().isBlank()) {
+            member.setNickname(request.nickname());
+        }
+
+        // 비밀번호 변경
+        if (request.password() != null && !request.password().isBlank()) {
+            if (!request.password().equals(request.passwordConfirm())) {
+                throw new MemberException(MemberExceptionResponseStatus.PASSWORD_MISMATCH);
+            }
+            member.setPassword(passwordEncoder.encode(request.password()));
+        }
+
+        memberRepository.save(member);
+
+        return PutMyInfoResponse.of(member);
+    }
+
+    @Transactional
+    public void deleteMyInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberExceptionResponseStatus.MEMBER_NOT_FOUND));
+
+        memberRepository.delete(member);
     }
 }
 

@@ -3,17 +3,23 @@ package com.ggamja.controller;
 import com.ggamja.domain.Member;
 import com.ggamja.dto.request.PostMemberLoginRequest;
 import com.ggamja.dto.request.PostMemberRegisterRequest;
-import com.ggamja.dto.response.GetMyInfoResponse;
-import com.ggamja.dto.response.PostMemberLoginResponse;
-import com.ggamja.dto.response.PostMemberRegisterResponse;
+import com.ggamja.dto.request.PutMyInfoRequest;
+import com.ggamja.dto.response.*;
+import com.ggamja.exception.MemberException;
+import com.ggamja.exception.MemberExceptionResponseStatus;
+import com.ggamja.repository.MemberRepository;
 import com.ggamja.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Operation(summary = "회원가입", description = "새로운 멤버를 등록합니다.")
     @ApiResponse(responseCode = "200", description = "회원가입 성공")
@@ -50,11 +57,13 @@ public class MemberController {
     public ResponseEntity<GetMyInfoResponse> getMyInfo(
             @AuthenticationPrincipal Member member
     ) {
-        if (member == null) {
-            return ResponseEntity.status(401).build();
-        }
-        return ResponseEntity.ok(GetMyInfoResponse.of(member));
+        // 세션에서 꺼낸 member 대신 DB에서 다시 조회
+        Member fresh = memberRepository.findById(member.getId())
+                .orElseThrow(() -> new MemberException(MemberExceptionResponseStatus.MEMBER_NOT_FOUND));
+
+        return ResponseEntity.ok(GetMyInfoResponse.of(fresh));
     }
+
 
     @Operation(summary = "로그아웃", description = "현재 로그인된 세션을 종료합니다.")
     @ApiResponse(responseCode = "200", description = "로그아웃 성공")
@@ -64,6 +73,40 @@ public class MemberController {
         // 실제 처리는 Spring Security LogoutFilter가 수행
     }
 
+    @Operation(summary = "내 정보 수정", description = "현재 로그인된 사용자의 정보를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "수정 성공",
+                    content = @Content(schema = @Schema(implementation = PutMyInfoResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 (비밀번호 불일치, 중복 닉네임 등)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패 (로그인 필요)",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PutMapping("/me")
+    public ResponseEntity<PutMyInfoResponse> updateMyInfo(
+            @AuthenticationPrincipal Member member,
+            @RequestBody PutMyInfoRequest request
+    ) {
+        PutMyInfoResponse response = memberService.updateMyInfo(member.getId(), request);
+        return ResponseEntity.ok(response);
+    }
 
+    @Operation(summary = "회원 탈퇴", description = "현재 로그인된 회원을 탈퇴 처리합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "탈퇴 성공",
+                    content = @Content(schema = @Schema(implementation = DeleteMemberResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패 (로그인 필요)"),
+            @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @DeleteMapping("/me")
+    public ResponseEntity<DeleteMemberResponse> deleteMyInfo(
+            @AuthenticationPrincipal Member member
+    ) {
+        memberService.deleteMyInfo(member.getId());
+        return ResponseEntity.ok(DeleteMemberResponse.success());
+    }
 }
 
