@@ -33,11 +33,11 @@ public class Member {
     @Setter
     private int points;
 
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    @Column(nullable = true, columnDefinition = "INT DEFAULT 0")
     @Setter
     private int weeklyAttendanceCount;   // 이번 주 출석 일수
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Setter
     private LocalDate weekStartDate;    // 이번 주(월요일)의 시작 날짜
 
