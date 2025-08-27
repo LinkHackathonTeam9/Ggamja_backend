@@ -1,14 +1,14 @@
-package com.ggamja.controller;
+package com.ggamja.domain.member.controller;
 
-import com.ggamja.domain.Member;
-import com.ggamja.dto.request.PostMemberLoginRequest;
-import com.ggamja.dto.request.PostMemberRegisterRequest;
-import com.ggamja.dto.request.PutMyInfoRequest;
-import com.ggamja.dto.response.*;
-import com.ggamja.exception.MemberException;
-import com.ggamja.exception.MemberExceptionResponseStatus;
-import com.ggamja.repository.MemberRepository;
-import com.ggamja.service.MemberService;
+import com.ggamja.domain.member.dto.response.*;
+import com.ggamja.domain.member.entity.Member;
+import com.ggamja.domain.member.dto.request.PostMemberLoginRequest;
+import com.ggamja.domain.member.dto.request.PostMemberRegisterRequest;
+import com.ggamja.domain.member.dto.request.PutMyInfoRequest;
+import com.ggamja.domain.member.repository.MemberRepository;
+import com.ggamja.domain.member.service.MemberService;
+import com.ggamja.global.docs.DocumentedApiErrors;
+import com.ggamja.global.exception.CustomException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +22,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
+import static com.ggamja.global.response.status.BaseExceptionResponseStatus.*;
+
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
@@ -31,8 +33,7 @@ public class MemberController {
     private final MemberRepository memberRepository;
 
     @Operation(summary = "회원가입", description = "새로운 멤버를 등록합니다.")
-    @ApiResponse(responseCode = "200", description = "회원가입 성공")
-    @ApiResponse(responseCode = "400", description = "요청 값 오류")
+    @DocumentedApiErrors({ DUPLICATED_EMAIL, PASSWORD_MISMATCH, LEVEL_NOT_FOUND })
     @PostMapping("/register")
     public ResponseEntity<PostMemberRegisterResponse> register(
             @Valid @RequestBody PostMemberRegisterRequest request) {
@@ -41,7 +42,7 @@ public class MemberController {
     }
 
     @Operation(summary = "로그인", description = "세션 기반 로그인")
-    @ApiResponse(responseCode = "200", description = "로그인 성공")
+    @DocumentedApiErrors({ MEMBER_NOT_FOUND, LEVEL_NOT_FOUND })
     @PostMapping("/login")
     public ResponseEntity<PostMemberLoginResponse> login(
             @RequestBody PostMemberLoginRequest request,
@@ -64,7 +65,7 @@ public class MemberController {
     ) {
         // 세션에서 꺼낸 member 대신 DB에서 다시 조회
         Member fresh = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new MemberException(MemberExceptionResponseStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         return ResponseEntity.ok(GetMyInfoResponse.of(fresh));
     }
