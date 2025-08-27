@@ -24,7 +24,7 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL) // 이넘 순서대로 저장하기 위함
     @Column(nullable = false)
     private Category category;
 
