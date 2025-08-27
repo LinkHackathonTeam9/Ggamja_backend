@@ -7,9 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class SecurityConfig {
@@ -24,10 +21,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/swagger-ui.html",
                                 "/swagger-ui/**",
+                                "/swagger-resources",
                                 "/swagger-resources/**",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
+                                "/webjars/**",
                                 "/api/members/register",
                                 "/api/members/login",
                                 "/actuator/health"
@@ -37,12 +37,12 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .logout(logout -> logout
-                        .logoutUrl("/api/members/logout")   // 로그아웃 엔드포인트 지정
+                        .logoutUrl("/api/members/logout")
                         .logoutSuccessHandler((request, response, authentication) -> {
                             response.setStatus(HttpServletResponse.SC_OK);
                             response.getWriter().write("{\"message\":\"logout successfully\"}");
                         })
-                ); // 기본 로그인 폼 비활성화
+                );
 
         return http.build();
     }
