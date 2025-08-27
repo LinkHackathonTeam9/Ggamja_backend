@@ -1,4 +1,4 @@
-FROM amazoncorretto:21
+FROM amazoncorretto:17
 
 COPY ./build/libs/*.jar ./app.jar
 
