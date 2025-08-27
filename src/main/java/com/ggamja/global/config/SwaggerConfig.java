@@ -64,7 +64,8 @@ public class SwaggerConfig {
                                 BAD_REQUEST,
                                 NOT_FOUND,
                                 INTERNAL_SERVER_ERROR,
-                                AUTH_UNAUTHENTICATED
+                                AUTH_UNAUTHENTICATED,
+                                REQUIRED_FIELD_MISSING
                         );
 
                         if (openApi.getPaths() == null) return;
