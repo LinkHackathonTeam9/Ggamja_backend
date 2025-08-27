@@ -41,7 +41,7 @@ public class Member {
     @Setter
     private LocalDate weekStartDate;    // 이번 주(월요일)의 시작 날짜
 
-    @Column(nullable = false)
+    @Column(nullable = true) // 회원가입했을 때 insert 가능하도록
     @Setter
     private LocalDateTime lastLogin;
 
