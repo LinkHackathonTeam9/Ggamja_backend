@@ -1,19 +1,18 @@
-package com.ggamja.service;
+package com.ggamja.domain.member.service;
 
-import com.ggamja.domain.Level;
-import com.ggamja.domain.Member;
-import com.ggamja.dto.request.PostMemberLoginRequest;
-import com.ggamja.dto.request.PostMemberRegisterRequest;
-import com.ggamja.dto.request.PutMyInfoRequest;
-import com.ggamja.dto.response.GetHomeResponse;
-import com.ggamja.dto.response.PostMemberLoginResponse;
-import com.ggamja.dto.response.PostMemberRegisterResponse;
-import com.ggamja.dto.response.PutMyInfoResponse;
-import com.ggamja.exception.MemberException;
-import com.ggamja.exception.MemberExceptionResponseStatus;
-import com.ggamja.exception.UnauthorizedException;
-import com.ggamja.repository.LevelRepository;
-import com.ggamja.repository.MemberRepository;
+import com.ggamja.domain.level.entity.Level;
+import com.ggamja.domain.member.entity.Member;
+import com.ggamja.domain.member.dto.request.PostMemberLoginRequest;
+import com.ggamja.domain.member.dto.request.PostMemberRegisterRequest;
+import com.ggamja.domain.member.dto.request.PutMyInfoRequest;
+import com.ggamja.domain.member.dto.response.GetHomeResponse;
+import com.ggamja.domain.member.dto.response.PostMemberLoginResponse;
+import com.ggamja.domain.member.dto.response.PostMemberRegisterResponse;
+import com.ggamja.domain.member.dto.response.PutMyInfoResponse;
+
+import com.ggamja.domain.level.repository.LevelRepository;
+import com.ggamja.domain.member.repository.MemberRepository;
+import com.ggamja.global.exception.CustomException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,28 +29,30 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.ggamja.global.response.status.BaseExceptionResponseStatus.*;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final LevelRepository levelRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
     public PostMemberRegisterResponse register(PostMemberRegisterRequest request) {
         if (!request.password().equals(request.passwordConfirm())) {
-            throw new MemberException(MemberExceptionResponseStatus.PASSWORD_MISMATCH);
+            throw new CustomException(PASSWORD_MISMATCH);
         }
 
         if (memberRepository.findByEmail(request.email()).isPresent()) {
-            throw new MemberException(MemberExceptionResponseStatus.DUPLICATED_EMAIL);
+            throw new CustomException(DUPLICATED_EMAIL);
         }
 
         String encodedPassword = passwordEncoder.encode(request.password());
 
         Level defaultLevel = levelRepository.findById(1L)
-                .orElseThrow(() -> new MemberException(MemberExceptionResponseStatus.LEVEL_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(LEVEL_NOT_FOUND));
 
         Member member = Member.create(
                 request.nickname(),
@@ -65,13 +66,13 @@ public class MemberService {
         return new PostMemberRegisterResponse(saved.getId(), saved.getNickname());
     }
 
-    @Transactional
+
     public PostMemberLoginResponse login(PostMemberLoginRequest request, HttpServletRequest httpRequest) {
         Member member = memberRepository.findByEmail(request.email())
-                .orElseThrow(() -> new UnauthorizedException("존재하지 않는 이메일입니다."));
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.password(), member.getPassword())) {
-            throw new UnauthorizedException("비밀번호가 올바르지 않습니다.");
+            throw new CustomException(MEMBER_NOT_FOUND);
         }
 
         boolean bonusGiven = false;
@@ -113,7 +114,7 @@ public class MemberService {
         // 레벨 계산
         Level currentLevel = member.getLevel();
         Level newLevel = levelRepository.findTopByStartPointLessThanEqualOrderByStartPointDesc(member.getPoints())
-                .orElseThrow(() -> new IllegalStateException("레벨 정보 없음"));
+                .orElseThrow(() -> new CustomException(LEVEL_NOT_FOUND));
 
         boolean levelChanged = false;
         if (!newLevel.equals(currentLevel)) {
@@ -143,10 +144,10 @@ public class MemberService {
         );
     }
 
-    @Transactional
+
     public PutMyInfoResponse updateMyInfo(Long memberId, PutMyInfoRequest request) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MemberExceptionResponseStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         // 닉네임 변경
         if (request.nickname() != null && !request.nickname().isBlank()) {
@@ -156,7 +157,7 @@ public class MemberService {
         // 비밀번호 변경
         if (request.password() != null && !request.password().isBlank()) {
             if (!request.password().equals(request.passwordConfirm())) {
-                throw new MemberException(MemberExceptionResponseStatus.PASSWORD_MISMATCH);
+                throw new CustomException(PASSWORD_MISMATCH);
             }
             member.setPassword(passwordEncoder.encode(request.password()));
         }
@@ -166,10 +167,10 @@ public class MemberService {
         return PutMyInfoResponse.of(member);
     }
 
-    @Transactional
+
     public void deleteMyInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MemberExceptionResponseStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         memberRepository.delete(member);
     }
@@ -177,7 +178,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public GetHomeResponse getHome(Long memberId) { // 홈화면 조회
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MemberExceptionResponseStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         return GetHomeResponse.of(member);
     }

@@ -1,5 +1,6 @@
-package com.ggamja.domain;
+package com.ggamja.domain.member.entity;
 
+import com.ggamja.domain.level.entity.Level;
 import jakarta.persistence.*;
 import lombok.*;
 
