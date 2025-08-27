@@ -1,14 +1,11 @@
 package com.ggamja.domain.member.service;
 
 import com.ggamja.domain.level.entity.Level;
+import com.ggamja.domain.member.dto.response.*;
 import com.ggamja.domain.member.entity.Member;
 import com.ggamja.domain.member.dto.request.PostMemberLoginRequest;
 import com.ggamja.domain.member.dto.request.PostMemberRegisterRequest;
 import com.ggamja.domain.member.dto.request.PutMyInfoRequest;
-import com.ggamja.domain.member.dto.response.GetHomeResponse;
-import com.ggamja.domain.member.dto.response.PostMemberLoginResponse;
-import com.ggamja.domain.member.dto.response.PostMemberRegisterResponse;
-import com.ggamja.domain.member.dto.response.PutMyInfoResponse;
 
 import com.ggamja.domain.level.repository.LevelRepository;
 import com.ggamja.domain.member.repository.MemberRepository;
@@ -128,6 +125,43 @@ public class MemberService {
         return PostMemberLoginResponse.of(member, bonusGiven, levelChanged);
     }
 
+
+    public PutMyInfoResponse updateMyInfo(Member member, PutMyInfoRequest request,  HttpServletRequest httpRequest) {
+        // 닉네임 변경
+        if (request.nickname() != null && !request.nickname().isBlank()) {
+            member.setNickname(request.nickname());
+        }
+
+        // 비밀번호 변경
+        if (request.password() != null && !request.password().isBlank()) {
+            if (!request.password().equals(request.passwordConfirm())) {
+                throw new CustomException(PASSWORD_MISMATCH);
+            }
+            member.setPassword(passwordEncoder.encode(request.password()));
+        }
+
+        memberRepository.save(member);
+
+        saveAuthenticationToSession(member, httpRequest);
+
+        return PutMyInfoResponse.of(member);
+    }
+
+    @Transactional(readOnly = true)
+    public GetMyInfoResponse getMyInfo(Member member) {
+        return GetMyInfoResponse.of(member);
+    }
+
+    public void deleteMyInfo(Member member) {
+        memberRepository.deleteById(member.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public GetHomeResponse getHome(Member member) { // 홈화면 조회
+        return GetHomeResponse.of(member);
+    }
+
+
     private void saveAuthenticationToSession(Member member, HttpServletRequest request) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 member,  // principal
@@ -144,43 +178,5 @@ public class MemberService {
         );
     }
 
-
-    public PutMyInfoResponse updateMyInfo(Long memberId, PutMyInfoRequest request) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-
-        // 닉네임 변경
-        if (request.nickname() != null && !request.nickname().isBlank()) {
-            member.setNickname(request.nickname());
-        }
-
-        // 비밀번호 변경
-        if (request.password() != null && !request.password().isBlank()) {
-            if (!request.password().equals(request.passwordConfirm())) {
-                throw new CustomException(PASSWORD_MISMATCH);
-            }
-            member.setPassword(passwordEncoder.encode(request.password()));
-        }
-
-        memberRepository.save(member);
-
-        return PutMyInfoResponse.of(member);
-    }
-
-
-    public void deleteMyInfo(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-
-        memberRepository.delete(member);
-    }
-
-    @Transactional(readOnly = true)
-    public GetHomeResponse getHome(Long memberId) { // 홈화면 조회
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-
-        return GetHomeResponse.of(member);
-    }
 }
 
