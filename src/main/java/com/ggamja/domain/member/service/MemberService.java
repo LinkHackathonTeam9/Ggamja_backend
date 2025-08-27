@@ -89,24 +89,23 @@ public class MemberService {
         // 이번 주차가 아니면 출석 카운트 리셋
         if (member.getWeekStartDate() == null ||
                 !member.getWeekStartDate().isEqual(thisWeekMonday)) {
-            member.setWeekStartDate(thisWeekMonday);
-            member.setWeeklyAttendanceCount(1);
+            member.resetWeeklyAttendance(thisWeekMonday);
         } else { // 이번주 출석이면 출석일수 ++
-            member.setWeeklyAttendanceCount(member.getWeeklyAttendanceCount() + 1);
+            member.increaseAttendance();
         }
 
         // 기본 출석 포인트 +1
-        member.setPoints(member.getPoints() + 1);
+        member.addPoints(1);
 
         // 일요일 & 이번 주 7일 출석 완료 → 보너스 지급
         if (today.getDayOfWeek() == DayOfWeek.SUNDAY &&
                 member.getWeeklyAttendanceCount() == 7) {
-            member.setPoints(member.getPoints() + 7);
+            member.addPoints(7);
             bonusGiven = true;
         }
 
         // 마지막 로그인 시간 갱신
-        member.setLastLogin(LocalDateTime.now());
+        member.updateLastLogin(LocalDateTime.now());
 
         // 레벨 계산
         Level currentLevel = member.getLevel();
@@ -115,7 +114,7 @@ public class MemberService {
 
         boolean levelChanged = false;
         if (!newLevel.equals(currentLevel)) {
-            member.setLevel(newLevel);
+            member.updateLevel(newLevel);
             levelChanged = true;
         }
 
@@ -129,7 +128,7 @@ public class MemberService {
     public PutMyInfoResponse updateMyInfo(Member member, PutMyInfoRequest request,  HttpServletRequest httpRequest) {
         // 닉네임 변경
         if (request.nickname() != null && !request.nickname().isBlank()) {
-            member.setNickname(request.nickname());
+            member.updateNickname(request.nickname());
         }
 
         // 비밀번호 변경
@@ -137,7 +136,7 @@ public class MemberService {
             if (!request.password().equals(request.passwordConfirm())) {
                 throw new CustomException(PASSWORD_MISMATCH);
             }
-            member.setPassword(passwordEncoder.encode(request.password()));
+            member.updatePassword(passwordEncoder.encode(request.password()));
         }
 
         memberRepository.save(member);
