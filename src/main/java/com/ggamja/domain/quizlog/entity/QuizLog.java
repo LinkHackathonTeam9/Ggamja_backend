@@ -33,6 +33,9 @@ public class QuizLog {
     @Column(nullable = false, updatable = false)
     private LocalDateTime date;
 
+    @Column(nullable = false, name = "is_Correct")
+    private boolean isCorrect;
+
     @PrePersist
     protected void onCreate() {
         this.date = LocalDateTime.now();
