@@ -5,7 +5,7 @@ spring:
     group:
       local: db-local, port-local, common, secret
       prod: db-prod, port-prod, common
-    active: prod
+#    active: local
 ---
 
 # local DB
@@ -51,7 +51,6 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
 
-
 ---
 # prod ?? ?? ??
 spring:
@@ -80,10 +79,3 @@ management:
     health:
       show-details: always
 
-springdoc:
-  api-docs:
-    enabled: true
-    path: /v3/api-docs
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui/index.html
