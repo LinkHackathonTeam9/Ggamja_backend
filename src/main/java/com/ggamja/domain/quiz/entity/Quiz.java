@@ -31,6 +31,9 @@ public class Quiz {
     @Column(nullable = false, length = 255)
     private String answer;
 
+    @Column(nullable = false)
+    private int point;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
