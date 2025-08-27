@@ -26,7 +26,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @Operation(summary = "회원가입", description = "새로운 멤버를 등록합니다.")
-    @DocumentedApiErrors({ DUPLICATED_EMAIL, PASSWORD_MISMATCH, LEVEL_NOT_FOUND })
+    @DocumentedApiErrors({ INVALID_EMAIL_FORMAT, DUPLICATED_EMAIL, PASSWORD_MISMATCH, LEVEL_NOT_FOUND })
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<PostMemberRegisterResponse>> register(
             @Valid @RequestBody PostMemberRegisterRequest request) {

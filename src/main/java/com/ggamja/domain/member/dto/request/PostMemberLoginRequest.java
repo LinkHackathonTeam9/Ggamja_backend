@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Email;
 
 public record PostMemberLoginRequest(
         @NotBlank
-        @Email(message = "이메일 형식이 올바르지 않습니다.")
+        @Email()
         @Schema(description = "이메일", example = "test1@example.com")
         String email,
 
