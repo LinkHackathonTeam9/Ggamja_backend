@@ -8,6 +8,8 @@ import com.ggamja.domain.studylog.repository.StudyLogRepository;
 import com.ggamja.domain.member.entity.Member;
 import com.ggamja.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,21 +24,14 @@ public class StudyLogService {
 
     private final StudyLogRepository studyLogRepository;
 
-    public GetStudyLogListResponse getStudyLogs(Member member) { // 목록 조회
-        List<StudyLog> logs = studyLogRepository.findAllByMemberOrderByDateDesc(member);
+    public GetStudyLogListResponse getStudyLogs(Member member, Pageable pageable) { // 목록 조회
+        Page<StudyLog> logs = studyLogRepository.findByMember(member, pageable);
 
-        List<GetStudyLogResponse> responses = logs.stream()
-                .map(log -> GetStudyLogResponse.builder()
-                        .logId(log.getId())
-                        .category(log.getCard().getCategory())
-                        .title(log.getCard().getTitle())
-                        .difficulty(log.getCard().getDifficulty())
-                        .date(log.getDate())
-                        .build()
-                )
+        List<GetStudyLogListResponse.StudyLogDto> content = logs.getContent().stream()
+                .map(GetStudyLogListResponse.StudyLogDto::from)
                 .toList();
 
-        return GetStudyLogListResponse.of(responses);
+        return GetStudyLogListResponse.of(content, logs.hasNext());
     }
 
     @Transactional(readOnly = true)

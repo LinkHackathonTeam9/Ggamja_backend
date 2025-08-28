@@ -9,6 +9,10 @@ import com.ggamja.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +26,19 @@ public class StudyLogController {
 
     private final StudyLogService studyLogService;
 
-    @Operation(summary = "학습한 기록 목록 조회", description = "로그인된 사용자의 모든 학습 이력을 최신순으로 반환합니다.")
-    @DocumentedApiErrors({ AUTH_UNAUTHENTICATED })
+    @Operation(
+            summary = "학습 이력 목록 조회",
+            description = "사용자가 조회한 학습 이력을 무한스크롤 형식으로 조회합니다."
+    )
+    @DocumentedApiErrors({AUTH_UNAUTHENTICATED})
     @GetMapping
     public ResponseEntity<BaseResponse<GetStudyLogListResponse>> getStudyLogs(
-            @AuthenticationPrincipal Member member
+            @AuthenticationPrincipal Member member,
+            @ParameterObject
+            @PageableDefault(sort = "date", direction = Sort.Direction.DESC)
+            Pageable pageable
     ) {
-        GetStudyLogListResponse response = studyLogService.getStudyLogs(member);
-        return ResponseEntity.ok(BaseResponse.ok(response));
+        return ResponseEntity.ok(BaseResponse.ok(studyLogService.getStudyLogs(member, pageable)));
     }
 
     @Operation(summary = "학습한 기록 상세 조회", description = "특정 학습 이력의 상세 정보를 반환합니다.")
