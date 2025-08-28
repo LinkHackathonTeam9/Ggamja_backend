@@ -16,7 +16,6 @@ public interface StudyLogRepository extends JpaRepository<StudyLog, Long> {
     @Query("SELECT DISTINCT s.card.category " +
             "FROM StudyLog s " +
             "WHERE s.member = :member " +
-            "AND DATE(s.date) = CURRENT_DATE")
+            "AND FUNCTION('DATE', s.date) = CURRENT_DATE")
     List<Category> findTodayCategoriesByMember(@Param("member") Member member);
-
 }
