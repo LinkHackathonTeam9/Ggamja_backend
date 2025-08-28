@@ -49,7 +49,7 @@ public class QuizLogController {
             summary = "퀴즈 로그 상세 조회",
             description = "특정 퀴즈 로그의 상세 정보를 조회합니다."
     )
-    @DocumentedApiErrors({AUTH_UNAUTHENTICATED})
+    @DocumentedApiErrors({AUTH_UNAUTHENTICATED, QUIZLOG_NOT_FOUND})
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<GetQuizLogDetailResponse>> getQuizLogDetail(
             @AuthenticationPrincipal Member member,
