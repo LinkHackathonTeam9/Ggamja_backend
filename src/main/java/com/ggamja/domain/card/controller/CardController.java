@@ -1,6 +1,8 @@
 package com.ggamja.domain.card.controller;
 
+import com.ggamja.domain.card.dto.request.PostCardCompleteRequest;
 import com.ggamja.domain.card.dto.response.GetCardDetailResponse;
+import com.ggamja.domain.card.dto.response.PostCardCompleteResponse;
 import com.ggamja.domain.card.service.CardService;
 import com.ggamja.domain.member.entity.Member;
 import com.ggamja.global.docs.DocumentedApiErrors;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import static com.ggamja.global.response.status.BaseExceptionResponseStatus.AUTH_UNAUTHENTICATED;
 import static com.ggamja.global.response.status.BaseExceptionResponseStatus.CARD_NOT_FOUND;
 
 @RestController
@@ -21,15 +24,29 @@ public class CardController {
 
     private final CardService cardService;
 
-    @Operation(summary = "카드 상세 정보 조회", description = "카드 ID를 기반으로 상세 정보를 조회합니다. 조회 시 study_log에 기록됩니다.")
+    @Operation(
+            summary = "카드 상세 정보 조회",
+            description = "카드 ID를 기반으로 상세 정보를 조회합니다."
+    )
     @DocumentedApiErrors({ CARD_NOT_FOUND })
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<GetCardDetailResponse>> getCardDetail(
             @Parameter(description = "카드 ID", example = "1")
-            @PathVariable Long id,
-            @AuthenticationPrincipal Member member
+            @PathVariable Long id
     ) {
-        GetCardDetailResponse response = cardService.getCardDetail(id, member);
+        GetCardDetailResponse response = cardService.getCardDetail(id);
+        return ResponseEntity.ok(BaseResponse.ok(response));
+    }
+
+    @Operation(summary = "학습 완료",
+            description = "study_log에 학습 기록 등록 후 사용자의 포인트에 3점을 추가합니다.")
+    @DocumentedApiErrors({ CARD_NOT_FOUND, AUTH_UNAUTHENTICATED })
+    @PostMapping("/complete")
+    public ResponseEntity<BaseResponse<PostCardCompleteResponse>> completeCard(
+            @AuthenticationPrincipal Member member,
+            @RequestBody PostCardCompleteRequest request
+    ) {
+        PostCardCompleteResponse response = cardService.completeCard(member, request);
         return ResponseEntity.ok(BaseResponse.ok(response));
     }
 }
