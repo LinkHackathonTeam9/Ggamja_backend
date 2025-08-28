@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "https://release.d1ojpmn1g2nfhz.amplifyapp.com", // 프론트 배포 주소
                         "https://api.ggamja.o-r.kr" // 백엔드 배포 주소
                 )
-                .allowedMethods("GET","POST","PATCH","DELETE", "PUT")
+                .allowedMethods("GET","POST","PATCH","DELETE", "PUT", "OPTION")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
