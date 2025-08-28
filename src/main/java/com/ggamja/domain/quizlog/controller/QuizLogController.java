@@ -2,7 +2,7 @@ package com.ggamja.domain.quizlog.controller;
 
 import com.ggamja.domain.member.entity.Member;
 import com.ggamja.domain.quizlog.dto.response.GetQuizLogDetailResponse;
-import com.ggamja.domain.quizlog.dto.response.GetQuizLogListResponse;
+import com.ggamja.domain.quizlog.dto.response.QuizLogDto;
 import com.ggamja.domain.quizlog.service.QuizLogService;
 import com.ggamja.global.docs.DocumentedApiErrors;
 import com.ggamja.global.response.BaseResponse;
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class QuizLogController {
     )
     @DocumentedApiErrors({AUTH_UNAUTHENTICATED})
     @GetMapping
-    public ResponseEntity<BaseResponse<GetQuizLogListResponse>> getQuizLogsList(
+    public ResponseEntity<BaseResponse<Page<QuizLogDto>>> getQuizLogs(
             @AuthenticationPrincipal Member member,
             @ParameterObject
             @PageableDefault(sort = "date", direction = Sort.Direction.DESC)

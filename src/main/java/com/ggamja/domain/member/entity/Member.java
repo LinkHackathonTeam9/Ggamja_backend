@@ -28,7 +28,6 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @Setter
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private int points;
 
