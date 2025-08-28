@@ -49,7 +49,7 @@ public class CardService {
         studyLogRepository.save(log);
 
         // 포인트 +3점
-        member.setPoints(member.getPoints() + 3);
+        member.addPoints(3);
         memberRepository.save(member);
 
         return new PostCardCompleteResponse(member.getPoints());
