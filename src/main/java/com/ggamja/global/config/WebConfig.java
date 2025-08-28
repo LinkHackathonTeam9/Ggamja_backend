@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:5173", // 프론트 로컬 주소
-                        "https://ggamja.o-r.kr", // 프론트 배포 주소
+                        "https://release.d1ojpmn1g2nfhz.amplifyapp.com", // 프론트 배포 주소
                         "https://api.ggamja.o-r.kr" // 백엔드 배포 주소
                 )
                 .allowedMethods("GET","POST","PATCH","DELETE", "PUT")
