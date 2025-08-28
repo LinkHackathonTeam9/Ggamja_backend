@@ -1,5 +1,6 @@
 package com.ggamja.domain.member.dto.response;
 
+import com.ggamja.domain.level.entity.Level;
 import com.ggamja.domain.member.dto.LevelDto;
 import com.ggamja.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,12 +21,12 @@ public record PostMemberLoginResponse(
         @Schema(description = "레벨 변경 여부", example = "false")
         boolean levelChanged
 ) {
-    public static PostMemberLoginResponse of(Member member, boolean bonusGiven, boolean levelChanged) {
+    public static PostMemberLoginResponse of(Member member, boolean bonusGiven, boolean levelChanged, Level next) {
         return new PostMemberLoginResponse(
                 member.getId(),
                 member.getNickname(),
                 bonusGiven,
-                LevelDto.from(member.getLevel()),
+                LevelDto.from(member.getLevel(), next),
                 levelChanged
         );
     }

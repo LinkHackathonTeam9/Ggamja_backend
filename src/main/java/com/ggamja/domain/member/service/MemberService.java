@@ -80,7 +80,10 @@ public class MemberService {
                 member.getLastLogin().toLocalDate().isEqual(today)) {
             // 세션 저장 (한 번 더 로그인할 때도 세션 유지되도록)
             saveAuthenticationToSession(member, httpRequest);
-            return PostMemberLoginResponse.of(member, false, false);
+
+            Level next = findNextLevel(member.getLevel());
+
+            return PostMemberLoginResponse.of(member, false, false, next);
         }
 
         // 이번 주 월요일 날짜
@@ -121,7 +124,10 @@ public class MemberService {
         // 로그인 성공 시 세션에 Authentication 저장
         saveAuthenticationToSession(member, httpRequest);
 
-        return PostMemberLoginResponse.of(member, bonusGiven, levelChanged);
+        Level next = levelRepository.findFirstByLevelGreaterThanOrderByLevelAsc(newLevel.getLevel())
+                .orElse(null);
+
+        return PostMemberLoginResponse.of(member, bonusGiven, levelChanged, next);
     }
 
 
@@ -148,7 +154,8 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public GetMyInfoResponse getMyInfo(Member member) {
-        return GetMyInfoResponse.of(member);
+        Level next = findNextLevel(member.getLevel());
+        return GetMyInfoResponse.of(member, next);
     }
 
     public void deleteMyInfo(Member member) {
@@ -157,7 +164,8 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public GetHomeResponse getHome(Member member) { // 홈화면 조회
-        return GetHomeResponse.of(member);
+        Level next = findNextLevel(member.getLevel());
+        return GetHomeResponse.of(member, next);
     }
 
 
@@ -175,6 +183,11 @@ public class MemberService {
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 SecurityContextHolder.getContext()
         );
+    }
+
+    private Level findNextLevel(Level currentLevel) {
+        return levelRepository.findFirstByLevelGreaterThanOrderByLevelAsc(currentLevel.getLevel())
+                .orElse(null);
     }
 
 }
