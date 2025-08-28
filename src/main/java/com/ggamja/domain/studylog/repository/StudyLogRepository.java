@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StudyLogRepository extends JpaRepository<StudyLog, Long> {
@@ -19,4 +20,19 @@ public interface StudyLogRepository extends JpaRepository<StudyLog, Long> {
             "WHERE s.member = :member " +
             "AND DATE(s.date) = :today")
     List<Category> findTodayCategoriesByMember(@Param("member") Member member, @Param("today") LocalDate today);
+
+    @Query("""
+        SELECT COUNT(DISTINCT sl.card.id)
+        FROM StudyLog sl
+        JOIN sl.card c
+        WHERE sl.member = :member
+          AND c.category = :category
+          AND sl.date BETWEEN :start AND :end
+    """)
+    Long countSolvedCardsByCategoryThisMonth(
+            @Param("member") Member member,
+            @Param("category") Category category,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
 }
