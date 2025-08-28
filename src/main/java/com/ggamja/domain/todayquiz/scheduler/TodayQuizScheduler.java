@@ -25,7 +25,7 @@ public class TodayQuizScheduler {
     private final TodayQuizRepository todayQuizRepository;
     private static final Random RANDOM = new Random();
 
-    @Scheduled(cron = "0 5 0 * * ?")
+    @Scheduled(cron = "0 17 1 * * ?", zone = "Asia/Seoul")
     public void createDailyQuiz() {
         LocalDate today = LocalDate.now();
 
