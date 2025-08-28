@@ -1,7 +1,8 @@
 package com.ggamja.domain.studylog.controller;
 
+import com.ggamja.domain.quizlog.dto.response.QuizLogDto;
 import com.ggamja.domain.studylog.dto.GetStudyLogDetailResponse;
-import com.ggamja.domain.studylog.dto.GetStudyLogListResponse;
+import com.ggamja.domain.studylog.dto.StudyLogDto;
 import com.ggamja.domain.studylog.service.StudyLogService;
 import com.ggamja.domain.member.entity.Member;
 import com.ggamja.global.docs.DocumentedApiErrors;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -32,7 +34,7 @@ public class StudyLogController {
     )
     @DocumentedApiErrors({AUTH_UNAUTHENTICATED})
     @GetMapping
-    public ResponseEntity<BaseResponse<GetStudyLogListResponse>> getStudyLogs(
+    public ResponseEntity<BaseResponse<Page<StudyLogDto>>> getStudyLogs(
             @AuthenticationPrincipal Member member,
             @ParameterObject
             @PageableDefault(sort = "date", direction = Sort.Direction.DESC)
