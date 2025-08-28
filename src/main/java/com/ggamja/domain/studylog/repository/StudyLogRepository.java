@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface StudyLogRepository extends JpaRepository<StudyLog, Long> {
@@ -16,6 +17,6 @@ public interface StudyLogRepository extends JpaRepository<StudyLog, Long> {
     @Query("SELECT DISTINCT s.card.category " +
             "FROM StudyLog s " +
             "WHERE s.member = :member " +
-            "AND FUNCTION('DATE', s.date) = CURRENT_DATE")
-    List<Category> findTodayCategoriesByMember(@Param("member") Member member);
+            "AND DATE(s.date) = :today")
+    List<Category> findTodayCategoriesByMember(@Param("member") Member member, @Param("today") LocalDate today);
 }

@@ -68,7 +68,7 @@ public class TodayQuizService {
     public GetTodayQuizStatusResponse getTodayQuizStatus(Member member) {
         LocalDate today = LocalDate.now();
 
-        TodayQuiz todayQuiz = todayQuizRepository.findByDate(today)
+        todayQuizRepository.findByDate(today)
                 .orElseThrow(() -> new CustomException(TODAYQUIZ_NOT_FOUND));
 
         boolean isSolved = quizLogRepository.existsByMemberAndDate(member, LocalDate.now());
