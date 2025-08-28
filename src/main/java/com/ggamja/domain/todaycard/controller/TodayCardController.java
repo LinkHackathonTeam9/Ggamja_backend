@@ -3,6 +3,7 @@ package com.ggamja.domain.todaycard.controller;
 import com.ggamja.domain.card.dto.response.GetCardDetailResponse;
 import com.ggamja.domain.card.entity.Category;
 import com.ggamja.domain.member.entity.Member;
+import com.ggamja.domain.todaycard.dto.response.GetTodayCardCategoriesResponse;
 import com.ggamja.domain.todaycard.service.TodayCardService;
 import com.ggamja.global.docs.DocumentedApiErrors;
 import com.ggamja.global.response.BaseResponse;
@@ -31,6 +32,16 @@ public class TodayCardController {
             @AuthenticationPrincipal Member member
     ) {
         GetCardDetailResponse response = todayCardService.getTodayCardDetail(category, member);
+        return ResponseEntity.ok(BaseResponse.ok(response));
+    }
+
+    @Operation(summary = "오늘의 카드 학습한 카테고리 조회", description = "학습 완료한 오늘의 카드 카테고리 목록을 조회합니다.")
+    @DocumentedApiErrors({ AUTH_UNAUTHENTICATED })
+    @GetMapping("/category")
+    public ResponseEntity<BaseResponse<GetTodayCardCategoriesResponse>> getTodayCardCategories(
+            @AuthenticationPrincipal Member member
+    ) {
+        GetTodayCardCategoriesResponse response = todayCardService.getTodayCategories(member);
         return ResponseEntity.ok(BaseResponse.ok(response));
     }
 }

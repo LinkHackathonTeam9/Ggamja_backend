@@ -5,6 +5,7 @@ import com.ggamja.domain.card.entity.Category;
 import com.ggamja.domain.member.entity.Member;
 import com.ggamja.domain.studylog.entity.StudyLog;
 import com.ggamja.domain.studylog.repository.StudyLogRepository;
+import com.ggamja.domain.todaycard.dto.response.GetTodayCardCategoriesResponse;
 import com.ggamja.domain.todaycard.entity.TodayCard;
 import com.ggamja.domain.todaycard.repository.TodayCardRepository;
 import com.ggamja.global.exception.CustomException;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.ggamja.global.response.status.BaseExceptionResponseStatus.*;
 
@@ -29,13 +31,6 @@ public class TodayCardService {
                 .findByDateAndCard_Category(today, category)
                 .orElseThrow(() -> new CustomException(CARD_NOT_FOUND));
 
-        // 공부 이력 저장
-        StudyLog log = StudyLog.builder()
-                .member(member)
-                .card(todayCard.getCard())
-                .build();
-        studyLogRepository.save(log);
-
         return GetCardDetailResponse.builder()
                 .id(todayCard.getCard().getId())
                 .category(todayCard.getCard().getCategory())
@@ -43,5 +38,10 @@ public class TodayCardService {
                 .meaning(todayCard.getCard().getMeaning())
                 .difficulty(todayCard.getCard().getDifficulty())
                 .build();
+    }
+
+    public GetTodayCardCategoriesResponse getTodayCategories(Member member) {
+        List<Category> categories = studyLogRepository.findTodayCategoriesByMember(member);
+        return GetTodayCardCategoriesResponse.of(categories);
     }
 }
