@@ -40,7 +40,7 @@ public class TodayCardService {
     }
 
     public GetTodayCardCategoriesResponse getTodayCategories(Member member) {
-        List<Category> categories = studyLogRepository.findTodayCategoriesByMember(member);
+        List<Category> categories = studyLogRepository.findTodayCategoriesByMember(member, LocalDate.now());
         return GetTodayCardCategoriesResponse.of(categories);
     }
 }
