@@ -59,7 +59,13 @@ public class AnalysisService {
 
         boolean allEqual = (maxAcc == minAcc);
 
-        return GetMonthlyCategoryAnalysisResponse.of(categories, strengths, weaknesses, allEqual);
+        return GetMonthlyCategoryAnalysisResponse.of(
+                member.getNickname(),
+                categories,
+                strengths,
+                weaknesses,
+                allEqual
+        );
     }
 
 }
