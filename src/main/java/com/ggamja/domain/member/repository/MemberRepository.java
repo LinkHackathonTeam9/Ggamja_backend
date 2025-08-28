@@ -15,4 +15,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // 로그인 시 email + password 매칭 (비밀번호는 보통 인코딩 비교해서 서비스 단에서 검증)
     Optional<Member> findByEmailAndPassword(String email, String password);
+
+
 }

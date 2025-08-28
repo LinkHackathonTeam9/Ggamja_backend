@@ -15,11 +15,11 @@ public record GetHomeResponse(
         @Schema(description = "레벨 상세 정보")
         LevelDto level
 ) {
-    public static GetHomeResponse of(Member member) {
+    public static GetHomeResponse of(Member member, Level next) {
         return new GetHomeResponse(
                 member.getNickname(),
                 member.getPoints(),
-                LevelDto.from(member.getLevel())
+                LevelDto.from(member.getLevel(), next)
         );
     }
 

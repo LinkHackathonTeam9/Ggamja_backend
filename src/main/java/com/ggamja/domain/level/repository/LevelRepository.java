@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface LevelRepository extends JpaRepository<Level, Long> {
     Optional<Level> findTopByStartPointLessThanEqualOrderByStartPointDesc(int points);
+    Optional<Level> findFirstByLevelGreaterThanOrderByLevelAsc(int level);
 }
