@@ -7,6 +7,7 @@ import com.ggamja.domain.quizlog.entity.QuizLog;
 import com.ggamja.domain.quizlog.repository.QuizLogRepository;
 import com.ggamja.domain.todayquiz.dto.request.PostTodayQuizSubmitRequest;
 import com.ggamja.domain.todayquiz.dto.response.GetTodayQuizResponse;
+import com.ggamja.domain.todayquiz.dto.response.GetTodayQuizStatusResponse;
 import com.ggamja.domain.todayquiz.dto.response.PostTodayQuizSubmitResponse;
 import com.ggamja.domain.todayquiz.entity.TodayQuiz;
 import com.ggamja.domain.todayquiz.repository.TodayQuizRepository;
@@ -62,5 +63,16 @@ public class TodayQuizService {
         }
 
         return PostTodayQuizSubmitResponse.from(todayQuiz, isCorrect);
+    }
+
+    public GetTodayQuizStatusResponse getTodayQuizStatus(Member member) {
+        LocalDate today = LocalDate.now();
+
+        TodayQuiz todayQuiz = todayQuizRepository.findByDate(today)
+                .orElseThrow(() -> new CustomException(TODAYQUIZ_NOT_FOUND));
+
+        boolean isSolved = quizLogRepository.existsByMemberAndDate(member, LocalDate.now());
+
+        return GetTodayQuizStatusResponse.of(isSolved);
     }
 }

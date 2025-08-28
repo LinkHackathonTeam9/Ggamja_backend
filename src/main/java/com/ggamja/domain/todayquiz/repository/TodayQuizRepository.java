@@ -1,5 +1,6 @@
 package com.ggamja.domain.todayquiz.repository;
 
+import com.ggamja.domain.member.entity.Member;
 import com.ggamja.domain.todayquiz.entity.TodayQuiz;
 import org.springframework.data.jpa.repository.JpaRepository;
 

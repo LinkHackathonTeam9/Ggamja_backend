@@ -3,7 +3,6 @@ package com.ggamja.domain.todaycard.service;
 import com.ggamja.domain.card.dto.response.GetCardDetailResponse;
 import com.ggamja.domain.card.entity.Category;
 import com.ggamja.domain.member.entity.Member;
-import com.ggamja.domain.studylog.entity.StudyLog;
 import com.ggamja.domain.studylog.repository.StudyLogRepository;
 import com.ggamja.domain.todaycard.dto.response.GetTodayCardCategoriesResponse;
 import com.ggamja.domain.todaycard.entity.TodayCard;
