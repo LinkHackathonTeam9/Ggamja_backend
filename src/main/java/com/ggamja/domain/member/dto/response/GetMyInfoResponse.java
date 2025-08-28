@@ -1,5 +1,6 @@
 package com.ggamja.domain.member.dto.response;
 
+import com.ggamja.domain.member.dto.LevelDto;
 import com.ggamja.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -16,8 +17,8 @@ public record GetMyInfoResponse(
         @Schema(description = "포인트", example = "120")
         int points,
 
-        @Schema(description = "레벨", example = "2")
-        String levelName
+        @Schema(description = "레벨 상세 정보")
+        LevelDto level
 ) {
     public static GetMyInfoResponse of(Member member) {
         return new GetMyInfoResponse(
@@ -25,7 +26,7 @@ public record GetMyInfoResponse(
                 member.getNickname(),
                 member.getEmail(),
                 member.getPoints(),
-                member.getLevel().getLevel()
+                LevelDto.from(member.getLevel())
         );
     }
 }

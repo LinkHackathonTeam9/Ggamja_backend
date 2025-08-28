@@ -18,13 +18,17 @@ public class Level {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String level;
+    @Column(nullable = false, unique = true)
+    private int level;
 
     @Column(name = "start_point", nullable = false, unique = true)
     private int startPoint;
 
     @Column(name = "character_url", nullable = false)
     private String characterUrl;
+
+    @Column(name = "character_name", nullable = false)
+    private String characterName;
+
 }
 

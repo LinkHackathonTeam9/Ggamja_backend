@@ -1,5 +1,6 @@
 package com.ggamja.domain.member.dto.response;
 
+import com.ggamja.domain.member.dto.LevelDto;
 import com.ggamja.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -10,11 +11,11 @@ public record PostMemberLoginResponse(
         @Schema(description = "닉네임", example = "깜자대장")
         String nickname,
 
-        @Schema(description = "레벨 이름", example = "1")
-        String levelName,
-
         @Schema(description = "출석 보너스 지급 여부", example = "true")
         boolean bonusGiven,
+
+        @Schema(description = "레벨 상세 정보")
+        LevelDto level,
 
         @Schema(description = "레벨 변경 여부", example = "false")
         boolean levelChanged
@@ -23,8 +24,8 @@ public record PostMemberLoginResponse(
         return new PostMemberLoginResponse(
                 member.getId(),
                 member.getNickname(),
-                member.getLevel().getLevel(),
                 bonusGiven,
+                LevelDto.from(member.getLevel()),
                 levelChanged
         );
     }
