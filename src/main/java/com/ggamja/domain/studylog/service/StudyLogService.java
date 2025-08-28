@@ -1,7 +1,7 @@
 package com.ggamja.domain.studylog.service;
 
-import com.ggamja.domain.studylog.dto.GetStudyLogDetailResponse;
-import com.ggamja.domain.studylog.dto.StudyLogDto;
+import com.ggamja.domain.studylog.dto.response.GetStudyLogDetailResponse;
+import com.ggamja.domain.studylog.dto.response.StudyLogDto;
 import com.ggamja.domain.studylog.entity.StudyLog;
 import com.ggamja.domain.studylog.repository.StudyLogRepository;
 import com.ggamja.domain.member.entity.Member;

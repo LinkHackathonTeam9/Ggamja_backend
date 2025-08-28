@@ -1,5 +1,7 @@
 package com.ggamja.domain.member.service;
 
+import com.ggamja.domain.attendance.entity.Attendance;
+import com.ggamja.domain.attendance.repository.AttendanceRepository;
 import com.ggamja.domain.level.entity.Level;
 import com.ggamja.domain.member.dto.response.*;
 import com.ggamja.domain.member.entity.Member;
@@ -35,6 +37,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final LevelRepository levelRepository;
+    private final AttendanceRepository attendanceRepository;
     private final PasswordEncoder passwordEncoder;
 
     public PostMemberRegisterResponse register(PostMemberRegisterRequest request) {
@@ -64,6 +67,7 @@ public class MemberService {
     }
 
 
+    @Transactional
     public PostMemberLoginResponse login(PostMemberLoginRequest request, HttpServletRequest httpRequest) {
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
@@ -78,11 +82,8 @@ public class MemberService {
         // 오늘 이미 로그인했다면 포인트 X
         if (member.getLastLogin() != null &&
                 member.getLastLogin().toLocalDate().isEqual(today)) {
-            // 세션 저장 (한 번 더 로그인할 때도 세션 유지되도록)
             saveAuthenticationToSession(member, httpRequest);
-
             Level next = findNextLevel(member.getLevel());
-
             return PostMemberLoginResponse.of(member, false, false, next);
         }
 
@@ -93,12 +94,21 @@ public class MemberService {
         if (member.getWeekStartDate() == null ||
                 !member.getWeekStartDate().isEqual(thisWeekMonday)) {
             member.resetWeeklyAttendance(thisWeekMonday);
-        } else { // 이번주 출석이면 출석일수 ++
+        } else { // 이번 주 출석이면 출석일수 ++
             member.increaseAttendance();
         }
 
         // 기본 출석 포인트 +1
         member.addPoints(1);
+
+        // Attendance 테이블에 오늘 기록 추가
+        if (!attendanceRepository.existsByMemberAndDate(member, today)) {
+            Attendance attendance = Attendance.builder()
+                    .member(member)
+                    .date(today)
+                    .build();
+            attendanceRepository.save(attendance);
+        }
 
         // 일요일 & 이번 주 7일 출석 완료 → 보너스 지급
         if (today.getDayOfWeek() == DayOfWeek.SUNDAY &&
@@ -120,7 +130,6 @@ public class MemberService {
 
         return PostMemberLoginResponse.of(member, bonusGiven, levelChanged, next);
     }
-
 
     public PutMyInfoResponse updateMyInfo(Member member, PutMyInfoRequest request,  HttpServletRequest httpRequest) {
         // 닉네임 변경
