@@ -25,7 +25,7 @@ public class TodayQuizScheduler {
     private final TodayQuizRepository todayQuizRepository;
     private static final Random RANDOM = new Random();
 
-    @Scheduled(cron = "0 30 1 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 45 1 * * ?", zone = "Asia/Seoul")
     public void createDailyQuiz() {
         LocalDate today = LocalDate.now();
 
@@ -33,7 +33,7 @@ public class TodayQuizScheduler {
             return;
         }
 
-        List<TodayCard> todayCards = todayCardRepository.findByDate(today);
+        List<TodayCard> todayCards = todayCardRepository.findAll();
 
         List<Quiz> quizzes = todayCards.stream()
                 .flatMap(todayCard -> quizRepository.findByCard(todayCard.getCard()).stream())
