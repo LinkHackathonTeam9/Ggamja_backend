@@ -6,6 +6,7 @@ import com.ggamja.domain.member.entity.Member;
 import com.ggamja.global.docs.DocumentedApiErrors;
 import com.ggamja.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +19,7 @@ import static com.ggamja.global.response.status.BaseExceptionResponseStatus.AUTH
 @RestController
 @RequestMapping("/api/analysis")
 @RequiredArgsConstructor
+@Tag(name = "Analysis", description = "AnalysisController - 통계 관련 api")
 public class AnalysisController {
 
     private final AnalysisService analysisService;

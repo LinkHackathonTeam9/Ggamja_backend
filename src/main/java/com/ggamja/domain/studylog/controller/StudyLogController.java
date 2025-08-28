@@ -8,6 +8,7 @@ import com.ggamja.global.docs.DocumentedApiErrors;
 import com.ggamja.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import static com.ggamja.global.response.status.BaseExceptionResponseStatus.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/studylogs")
+@Tag(name = "StudyLog", description = "StudyLogController - 학습 기록 관련 api")
 public class StudyLogController {
 
     private final StudyLogService studyLogService;

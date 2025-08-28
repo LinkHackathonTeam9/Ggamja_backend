@@ -5,6 +5,7 @@ import com.ggamja.domain.attendance.service.AttendanceService;
 import com.ggamja.domain.member.entity.Member;
 import com.ggamja.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/attendance")
 @RequiredArgsConstructor
+@Tag(name = "Attendance", description = "AttendanceController - 출석 관련 api")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
