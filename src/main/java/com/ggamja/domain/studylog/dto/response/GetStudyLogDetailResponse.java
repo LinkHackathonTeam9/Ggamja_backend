@@ -1,4 +1,4 @@
-package com.ggamja.domain.studylog.dto;
+package com.ggamja.domain.studylog.dto.response;
 
 import com.ggamja.domain.card.entity.Category;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.ggamja.domain.studylog.dto;
+package com.ggamja.domain.studylog.dto.response;
 
 import com.ggamja.domain.studylog.entity.StudyLog;
 import io.swagger.v3.oas.annotations.media.Schema;

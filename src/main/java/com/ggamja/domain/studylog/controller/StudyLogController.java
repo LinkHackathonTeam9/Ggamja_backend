@@ -1,8 +1,7 @@
 package com.ggamja.domain.studylog.controller;
 
-import com.ggamja.domain.quizlog.dto.response.QuizLogDto;
-import com.ggamja.domain.studylog.dto.GetStudyLogDetailResponse;
-import com.ggamja.domain.studylog.dto.StudyLogDto;
+import com.ggamja.domain.studylog.dto.response.GetStudyLogDetailResponse;
+import com.ggamja.domain.studylog.dto.response.StudyLogDto;
 import com.ggamja.domain.studylog.service.StudyLogService;
 import com.ggamja.domain.member.entity.Member;
 import com.ggamja.global.docs.DocumentedApiErrors;
