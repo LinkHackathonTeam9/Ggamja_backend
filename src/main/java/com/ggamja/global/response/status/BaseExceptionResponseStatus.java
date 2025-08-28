@@ -25,7 +25,16 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_CATEGORY(61002, "유효하지 않은 카테고리 번호입니다.", HttpStatus.BAD_REQUEST),
 
     // studyLog
-    STUDY_LOG_NOT_FOUND(62000, "해당 학습 이력을 찾을 수 없습니다.", HttpStatus.NOT_FOUND)
+    STUDY_LOG_NOT_FOUND(62000, "해당 학습 이력을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
+    //todaycard
+
+    //quiz
+
+    //todayquiz
+    QUIZ_NOT_FOUND(100000, "퀴즈를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    TODAYQUIZ_NOT_FOUND(100001, "오늘의 퀴즈를 찾을 수 없습니다.", HttpStatus.NOT_FOUND)
+    //quizlog
     ;
 
     private final int code;

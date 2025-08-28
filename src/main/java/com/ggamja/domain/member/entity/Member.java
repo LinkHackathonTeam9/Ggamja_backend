@@ -20,34 +20,27 @@ public class Member {
     private Long id;
 
     @Column(length = 30, nullable = false)
-    @Setter
     private String nickname;
 
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
-    @Setter
     private String password;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    @Setter
     private int points;
 
     @Column(nullable = true, columnDefinition = "INT DEFAULT 0")
-    @Setter
     private int weeklyAttendanceCount;   // 이번 주 출석 일수
 
     @Column(nullable = true)
-    @Setter
     private LocalDate weekStartDate;    // 이번 주(월요일)의 시작 날짜
 
     @Column(nullable = true) // 회원가입했을 때 insert 가능하도록
-    @Setter
     private LocalDateTime lastLogin;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Setter
     @JoinColumn(name = "level_id", nullable = false)
     private Level level;
 
@@ -58,5 +51,34 @@ public class Member {
                 .password(password)
                 .level(level)
                 .build();
+    }
+
+    public void addPoints(int amount) {
+        this.points += amount;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void updateLastLogin(LocalDateTime loginTime) {
+        this.lastLogin = loginTime;
+    }
+
+    public void resetWeeklyAttendance(LocalDate weekStartDate) {
+        this.weekStartDate = weekStartDate;
+        this.weeklyAttendanceCount = 1;
+    }
+
+    public void increaseAttendance() {
+        this.weeklyAttendanceCount += 1;
+    }
+
+    public void updateLevel(Level newLevel) {
+        this.level = newLevel;
     }
 }
