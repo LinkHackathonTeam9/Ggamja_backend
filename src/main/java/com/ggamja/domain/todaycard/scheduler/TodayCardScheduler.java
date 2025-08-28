@@ -23,7 +23,7 @@ public class TodayCardScheduler {
     private static final Random RANDOM = new Random();
 
     // 매일 00:02 → 카테고리별 오늘의카드 선정
-    @Scheduled(cron = "0 30 1 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 2 0 * * ?", zone = "Asia/Seoul")
     public void createDailyTodayCards() {
         LocalDate today = LocalDate.now();
 
