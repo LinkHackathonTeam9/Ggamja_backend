@@ -9,6 +9,7 @@ import com.ggamja.domain.member.service.MemberService;
 import com.ggamja.global.docs.DocumentedApiErrors;
 import com.ggamja.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import static com.ggamja.global.response.status.BaseExceptionResponseStatus.*;
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
+@Tag(name = "Member", description = "MemberController - 멤버 관련 api")
 public class MemberController {
 
     private final MemberService memberService;
