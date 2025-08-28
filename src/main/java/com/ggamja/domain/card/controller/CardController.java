@@ -1,6 +1,5 @@
 package com.ggamja.domain.card.controller;
 
-import com.ggamja.domain.card.dto.request.PostCardCompleteRequest;
 import com.ggamja.domain.card.dto.response.GetCardDetailResponse;
 import com.ggamja.domain.card.dto.response.PostCardCompleteResponse;
 import com.ggamja.domain.card.service.CardService;
@@ -38,15 +37,18 @@ public class CardController {
         return ResponseEntity.ok(BaseResponse.ok(response));
     }
 
-    @Operation(summary = "학습 완료",
-            description = "study_log에 학습 기록 등록 후 사용자의 포인트에 3점을 추가합니다.")
+    @Operation(
+            summary = "학습 완료",
+            description = "study_log에 학습 기록 등록 후 사용자의 포인트에 3점을 추가합니다."
+    )
     @DocumentedApiErrors({ CARD_NOT_FOUND, AUTH_UNAUTHENTICATED })
-    @PostMapping("/complete")
+    @PostMapping("/complete/{cardId}")
     public ResponseEntity<BaseResponse<PostCardCompleteResponse>> completeCard(
             @AuthenticationPrincipal Member member,
-            @RequestBody PostCardCompleteRequest request
+            @Parameter(description = "완료한 카드 ID", example = "1")
+            @PathVariable Long cardId
     ) {
-        PostCardCompleteResponse response = cardService.completeCard(member, request);
+        PostCardCompleteResponse response = cardService.completeCard(member, cardId);
         return ResponseEntity.ok(BaseResponse.ok(response));
     }
 }

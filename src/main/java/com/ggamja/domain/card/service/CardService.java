@@ -1,6 +1,5 @@
 package com.ggamja.domain.card.service;
 
-import com.ggamja.domain.card.dto.request.PostCardCompleteRequest;
 import com.ggamja.domain.card.dto.response.GetCardDetailResponse;
 import com.ggamja.domain.card.dto.response.PostCardCompleteResponse;
 import com.ggamja.domain.card.entity.Card;
@@ -38,8 +37,8 @@ public class CardService {
     }
 
     @Transactional
-    public PostCardCompleteResponse completeCard(Member member, PostCardCompleteRequest request) {
-        Card card = cardRepository.findById(request.cardId())
+    public PostCardCompleteResponse completeCard(Member member, Long cardId) {
+        Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CustomException(CARD_NOT_FOUND));
 
         // study_log 기록 추가
@@ -53,6 +52,6 @@ public class CardService {
         member.setPoints(member.getPoints() + 3);
         memberRepository.save(member);
 
-        return new PostCardCompleteResponse(log.getId(), member.getPoints());
+        return new PostCardCompleteResponse(member.getPoints());
     }
 }
