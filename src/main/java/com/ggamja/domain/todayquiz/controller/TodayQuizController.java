@@ -1,6 +1,7 @@
 package com.ggamja.domain.todayquiz.controller;
 
 import com.ggamja.domain.member.entity.Member;
+import com.ggamja.domain.todayquiz.dto.response.GetTodayQuizStatusResponse;
 import com.ggamja.domain.todayquiz.dto.request.PostTodayQuizSubmitRequest;
 import com.ggamja.domain.todayquiz.dto.response.GetTodayQuizResponse;
 import com.ggamja.domain.todayquiz.dto.response.PostTodayQuizSubmitResponse;
@@ -45,5 +46,14 @@ public class TodayQuizController {
             @AuthenticationPrincipal Member member
     ) {
         return todayQuizService.submitTodayQuiz(member, id, request);
+    }
+
+    @Operation(summary = "오늘의 퀴즈 풀이 여부 확인", description = "오늘의 퀴즈를 이미 풀었는지 여부를 반환합니다.")
+    @GetMapping("/status")
+    @DocumentedApiErrors({ AUTH_UNAUTHENTICATED, TODAYQUIZ_NOT_FOUND})
+    public ResponseEntity<BaseResponse<GetTodayQuizStatusResponse>> getTodayQuizStatus(
+            @AuthenticationPrincipal Member member
+    ) {
+        return ResponseEntity.ok(BaseResponse.ok(todayQuizService.getTodayQuizStatus(member)));
     }
 }
