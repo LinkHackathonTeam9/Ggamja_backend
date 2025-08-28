@@ -34,7 +34,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     //todayquiz
     QUIZ_NOT_FOUND(100000, "퀴즈를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     TODAYQUIZ_NOT_FOUND(100001, "오늘의 퀴즈를 찾을 수 없습니다.", HttpStatus.NOT_FOUND)
-    //quizlog
+
+      //quizlog
+    QUIZLOG_NOT_FOUND(120000, "퀴즈 로그를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     ;
 
     private final int code;

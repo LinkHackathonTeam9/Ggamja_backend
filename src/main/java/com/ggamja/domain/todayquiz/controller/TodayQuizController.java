@@ -1,6 +1,5 @@
 package com.ggamja.domain.todayquiz.controller;
 
-import com.ggamja.domain.member.dto.response.PostMemberRegisterResponse;
 import com.ggamja.domain.member.entity.Member;
 import com.ggamja.domain.todayquiz.dto.request.PostTodayQuizSubmitRequest;
 import com.ggamja.domain.todayquiz.dto.response.GetTodayQuizResponse;
@@ -10,7 +9,7 @@ import com.ggamja.global.docs.DocumentedApiErrors;
 import com.ggamja.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +22,7 @@ import static com.ggamja.global.response.status.BaseExceptionResponseStatus.TODA
 @RestController
 @RequestMapping("/api/today-quizzes")
 @RequiredArgsConstructor
+@Tag(name = "TodayQuiz", description = "TodayQuizController - 오늘의 퀴즈 관련 api")
 public class TodayQuizController {
 
     private final TodayQuizService todayQuizService;
