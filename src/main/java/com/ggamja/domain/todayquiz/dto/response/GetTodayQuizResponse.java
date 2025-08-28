@@ -32,7 +32,7 @@ public record GetTodayQuizResponse(
         Collections.shuffle(options);
 
         return new GetTodayQuizResponse(
-                quiz.getId(),
+                todayQuiz.getId(),
                 quiz.getCard().getId(),
                 quiz.getQuestion(),
                 quiz.getAnswer(),
