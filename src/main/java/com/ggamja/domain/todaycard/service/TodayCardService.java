@@ -22,14 +22,8 @@ public class TodayCardService {
     private final TodayCardRepository todayCardRepository;
     private final StudyLogRepository studyLogRepository;
 
-    public GetCardDetailResponse getTodayCardDetail(int categoryOrdinal, Member member) {
+    public GetCardDetailResponse getTodayCardDetail(Category category, Member member) {
         LocalDate today = LocalDate.now();
-
-        Category[] categories = Category.values();
-        if (categoryOrdinal < 0 || categoryOrdinal >= categories.length) {
-            throw new CustomException(INVALID_CATEGORY);
-        }
-        Category category = categories[categoryOrdinal];
 
         TodayCard todayCard = todayCardRepository
                 .findByDateAndCard_Category(today, category)

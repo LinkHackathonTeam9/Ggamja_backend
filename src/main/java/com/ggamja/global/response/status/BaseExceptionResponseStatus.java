@@ -22,7 +22,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
     // card
     CARD_NOT_FOUND(61000, "해당 카드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    INVALID_CATEGORY(61002, "유효하지 않은 카테고리 번호입니다.", HttpStatus.BAD_REQUEST)
+    INVALID_CATEGORY(61002, "유효하지 않은 카테고리 번호입니다.", HttpStatus.BAD_REQUEST),
+
+    // studyLog
+    STUDY_LOG_NOT_FOUND(62000, "해당 학습 이력을 찾을 수 없습니다.", HttpStatus.NOT_FOUND)
     ;
 
     private final int code;
