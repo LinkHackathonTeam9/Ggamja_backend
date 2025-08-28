@@ -18,7 +18,11 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     DUPLICATED_EMAIL(60001, "이미 사용 중인 이메일입니다.", HttpStatus.BAD_REQUEST),
     PASSWORD_MISMATCH(60002, "비밀번호와 비밀번호 확인이 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     LEVEL_NOT_FOUND(60003, "기본 레벨이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
-    MEMBER_NOT_FOUND(60004, "회원을 찾을 수 없습니다.", HttpStatus.NOT_FOUND)
+    MEMBER_NOT_FOUND(60004, "회원을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
+    // card
+    CARD_NOT_FOUND(61000, "해당 카드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    INVALID_CATEGORY(61002, "유효하지 않은 카테고리 번호입니다.", HttpStatus.BAD_REQUEST)
     ;
 
     private final int code;
