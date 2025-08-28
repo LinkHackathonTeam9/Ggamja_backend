@@ -20,7 +20,12 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     LEVEL_NOT_FOUND(60003, "기본 레벨이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     MEMBER_NOT_FOUND(60004, "회원을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
-    //card
+    // card
+    CARD_NOT_FOUND(61000, "해당 카드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    INVALID_CATEGORY(61002, "유효하지 않은 카테고리 번호입니다.", HttpStatus.BAD_REQUEST),
+
+    // studyLog
+    STUDY_LOG_NOT_FOUND(62000, "해당 학습 이력을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
     //todaycard
 
@@ -28,11 +33,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
     //todayquiz
     QUIZ_NOT_FOUND(100000, "퀴즈를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    TODAYQUIZ_NOT_FOUND(100001, "오늘의 퀴즈를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    //studylog
-
+    TODAYQUIZ_NOT_FOUND(100001, "오늘의 퀴즈를 찾을 수 없습니다.", HttpStatus.NOT_FOUND)
     //quizlog
-
     ;
 
     private final int code;
