@@ -110,22 +110,13 @@ public class MemberService {
         // 마지막 로그인 시간 갱신
         member.updateLastLogin(LocalDateTime.now());
 
-        // 레벨 계산
-        Level currentLevel = member.getLevel();
-        Level newLevel = levelRepository.findTopByStartPointLessThanEqualOrderByStartPointDesc(member.getPoints())
-                .orElseThrow(() -> new CustomException(LEVEL_NOT_FOUND));
-
-        boolean levelChanged = false;
-        if (!newLevel.equals(currentLevel)) {
-            member.updateLevel(newLevel);
-            levelChanged = true;
-        }
+        // 레벨 갱신
+        boolean levelChanged = updateMemberLevel(member);
 
         // 로그인 성공 시 세션에 Authentication 저장
         saveAuthenticationToSession(member, httpRequest);
 
-        Level next = levelRepository.findFirstByLevelGreaterThanOrderByLevelAsc(newLevel.getLevel())
-                .orElse(null);
+        Level next = findNextLevel(member.getLevel());
 
         return PostMemberLoginResponse.of(member, bonusGiven, levelChanged, next);
     }
@@ -154,20 +145,23 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public GetMyInfoResponse getMyInfo(Member member) {
+        updateMemberLevel(member);
+
         Level next = findNextLevel(member.getLevel());
         return GetMyInfoResponse.of(member, next);
+    }
+
+    @Transactional(readOnly = true)
+    public GetHomeResponse getHome(Member member) { // 홈화면 조회
+        updateMemberLevel(member);
+
+        Level next = findNextLevel(member.getLevel());
+        return GetHomeResponse.of(member, next);
     }
 
     public void deleteMyInfo(Member member) {
         memberRepository.deleteById(member.getId());
     }
-
-    @Transactional(readOnly = true)
-    public GetHomeResponse getHome(Member member) { // 홈화면 조회
-        Level next = findNextLevel(member.getLevel());
-        return GetHomeResponse.of(member, next);
-    }
-
 
     private void saveAuthenticationToSession(Member member, HttpServletRequest request) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
@@ -190,5 +184,18 @@ public class MemberService {
                 .orElse(null);
     }
 
+    private boolean updateMemberLevel(Member member) {
+        Level currentLevel = member.getLevel();
+
+        Level newLevel = levelRepository
+                .findTopByStartPointLessThanEqualOrderByStartPointDesc(member.getPoints())
+                .orElseThrow(() -> new CustomException(LEVEL_NOT_FOUND));
+
+        if (!newLevel.equals(currentLevel)) {
+            member.updateLevel(newLevel);
+            return true; // 레벨 갱신
+        }
+        return false; // 레벨 그대로
+    }
 }
 
