@@ -79,3 +79,9 @@ management:
     health:
       show-details: always
 
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: none
+        secure: true   # 항상 Secure 적용
