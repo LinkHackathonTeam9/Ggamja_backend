@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 public record GetMonthlyCategoryAnalysisResponse(
+        @Schema(description = "사용자 닉네임", example = "채붕이")
+        String nickname,
+
         @Schema(description = "카테고리별 통계 목록")
         List<CategoryStat> categories,
 
@@ -17,11 +20,11 @@ public record GetMonthlyCategoryAnalysisResponse(
         @Schema(description = "모든 카테고리 정답률 동일 여부", example = "false")
         boolean allEqual
 ) {
-    public static GetMonthlyCategoryAnalysisResponse of(List<CategoryStat> categories,
+    public static GetMonthlyCategoryAnalysisResponse of(String nickname,
+                                                        List<CategoryStat> categories,
                                                         List<String> strengths,
                                                         List<String> weaknesses,
                                                         boolean allEqual) {
-        return new GetMonthlyCategoryAnalysisResponse(categories, strengths, weaknesses, allEqual);
+        return new GetMonthlyCategoryAnalysisResponse(nickname, categories, strengths, weaknesses, allEqual);
     }
-
 }
