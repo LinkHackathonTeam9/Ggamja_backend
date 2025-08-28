@@ -1,5 +1,6 @@
 package com.ggamja.domain.card.controller;
 
+import com.ggamja.domain.attendance.entity.Attendance;
 import com.ggamja.domain.card.dto.response.GetCardDetailResponse;
 import com.ggamja.domain.card.dto.response.PostCardCompleteResponse;
 import com.ggamja.domain.card.service.CardService;
@@ -8,6 +9,7 @@ import com.ggamja.global.docs.DocumentedApiErrors;
 import com.ggamja.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +21,7 @@ import static com.ggamja.global.response.status.BaseExceptionResponseStatus.CARD
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cards")
+@Tag(name = "Card", description = "CardController - 카드 관련 api")
 public class CardController {
 
     private final CardService cardService;

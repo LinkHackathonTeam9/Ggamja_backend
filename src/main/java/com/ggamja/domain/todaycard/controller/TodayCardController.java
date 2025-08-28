@@ -9,6 +9,7 @@ import com.ggamja.global.docs.DocumentedApiErrors;
 import com.ggamja.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +20,7 @@ import static com.ggamja.global.response.status.BaseExceptionResponseStatus.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/todaycards")
+@Tag(name = "TodayCard", description = "TodayCardController - 오늘의 학습 카드 관련 api")
 public class TodayCardController {
 
     private final TodayCardService todayCardService;
