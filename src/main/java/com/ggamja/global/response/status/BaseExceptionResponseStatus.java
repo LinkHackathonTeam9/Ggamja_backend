@@ -32,7 +32,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     //studylog
 
     //quizlog
-
+    QUIZLOG_NOT_FOUND(120000, "퀴즈 로그를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;
