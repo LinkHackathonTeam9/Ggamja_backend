@@ -34,8 +34,7 @@ public class Quiz {
     @Column(nullable = false)
     private int point;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_id", nullable = false, unique = true)
     private Card card;
 }
-
